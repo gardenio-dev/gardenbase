@@ -1,0 +1,25 @@
+services:
+  postgis:
+    image: gardenio/gardenbase:${VERSION:-latest}
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        UBUNTU: ${UBUNTU:-24.04}
+        GEOS: ${GEOS:-3.13.0}
+        GDAL: ${GDAL:-3.10.2}
+        PROJ: ${PROJ:-9.5.0}
+        POSTGRES: ${POSTGRES:-17.5}
+        POSTGIS: ${POSTGIS:-3.5.1}
+        PGROUTING: ${PGROUTING:-3.6.3}
+        PYTHON: ${PYTHON:-3.13.7}
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    ports:
+      - "${PORT:-5432}:5432"
+    volumes:
+      - gardenbase-data:/data
+
+volumes:
+  gardenbase-data:
