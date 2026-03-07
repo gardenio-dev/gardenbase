@@ -3,8 +3,16 @@ name: Build and Push
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - '*.md'
+      - 'LICENSE'
+      - 'logo.png'
   pull_request:
     branches: [main]
+    paths-ignore:
+      - '*.md'
+      - 'LICENSE'
+      - 'logo.png'
   workflow_dispatch:
     inputs:
       profile:

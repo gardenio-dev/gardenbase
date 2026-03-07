@@ -1,9 +1,14 @@
 # gardenbase
 
+<table><tr>
+<td><img src="logo.png" alt="gardenbase logo" width="300"></td>
+<td>
 PostGIS Docker image built from source for the
-[GardenIO](https://github.com/gardenio-dev/gardenio) project.
+<a href="https://github.com/gardenio-dev/gardenio">GardenIO</a> project.
 Compiles PostgreSQL, PostGIS, GDAL, GEOS, PROJ, and pgRouting
 from source tarballs for fine-grained version control.
+</td>
+</tr></table>
 
 ## Quick Start
 
