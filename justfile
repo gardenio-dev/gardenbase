@@ -7,12 +7,15 @@ default_profile := "pg17-postgis3.5"
 default:
     @just --list
 
-# Build the image from a profile
+# Build the image from a profile (native platform, loadable into Docker)
 build profile=default_profile:
     #!/usr/bin/env bash
     set -euo pipefail
     source "profiles/{{ profile }}.env"
-    docker build \
+    PG_MAJOR="${POSTGRES%%.*}"
+    POSTGIS_MAJOR="${POSTGIS%.*}"
+    docker buildx build \
+        --load \
         --build-arg UBUNTU="${UBUNTU}" \
         --build-arg GEOS="${GEOS}" \
         --build-arg GDAL="${GDAL}" \
@@ -22,6 +25,7 @@ build profile=default_profile:
         --build-arg PGROUTING="${PGROUTING}" \
         --build-arg PYTHON="${PYTHON}" \
         -t "gardenio/gardenbase:${VERSION}" \
+        -t "gardenio/gardenbase:pg${PG_MAJOR}-postgis${POSTGIS_MAJOR}" \
         -t "gardenio/gardenbase:latest" \
         .
 
@@ -29,15 +33,25 @@ build profile=default_profile:
 login:
     docker login
 
-# Push the image for a profile (all tags)
-push profile=default_profile: login (build profile)
+# Build and push multi-platform image for a profile (all tags)
+push profile=default_profile: login
     #!/usr/bin/env bash
     set -euo pipefail
     source "profiles/{{ profile }}.env"
     PG_MAJOR="${POSTGRES%%.*}"
     POSTGIS_MAJOR="${POSTGIS%.*}"
-    docker tag "gardenio/gardenbase:${VERSION}" "gardenio/gardenbase:pg${PG_MAJOR}-postgis${POSTGIS_MAJOR}"
-    docker tag "gardenio/gardenbase:${VERSION}" "gardenio/gardenbase:latest"
-    docker push "gardenio/gardenbase:${VERSION}"
-    docker push "gardenio/gardenbase:pg${PG_MAJOR}-postgis${POSTGIS_MAJOR}"
-    docker push "gardenio/gardenbase:latest"
+    docker buildx build \
+        --platform linux/amd64,linux/arm64 \
+        --push \
+        --build-arg UBUNTU="${UBUNTU}" \
+        --build-arg GEOS="${GEOS}" \
+        --build-arg GDAL="${GDAL}" \
+        --build-arg PROJ="${PROJ}" \
+        --build-arg POSTGRES="${POSTGRES}" \
+        --build-arg POSTGIS="${POSTGIS}" \
+        --build-arg PGROUTING="${PGROUTING}" \
+        --build-arg PYTHON="${PYTHON}" \
+        -t "gardenio/gardenbase:${VERSION}" \
+        -t "gardenio/gardenbase:pg${PG_MAJOR}-postgis${POSTGIS_MAJOR}" \
+        -t "gardenio/gardenbase:latest" \
+        .
