@@ -39,6 +39,8 @@ jobs:
           echo "VERSION=${VERSION}" >> "$GITHUB_ENV"
           echo "UBUNTU=${UBUNTU}" >> "$GITHUB_ENV"
           echo "GEOS=${GEOS}" >> "$GITHUB_ENV"
+          echo "CGAL=${CGAL}" >> "$GITHUB_ENV"
+          echo "SFCGAL=${SFCGAL}" >> "$GITHUB_ENV"
           echo "GDAL=${GDAL}" >> "$GITHUB_ENV"
           echo "PROJ=${PROJ}" >> "$GITHUB_ENV"
           echo "POSTGRES=${POSTGRES}" >> "$GITHUB_ENV"
@@ -81,6 +83,8 @@ jobs:
           build-args: |
             UBUNTU=${{ env.UBUNTU }}
             GEOS=${{ env.GEOS }}
+            CGAL=${{ env.CGAL }}
+            SFCGAL=${{ env.SFCGAL }}
             GDAL=${{ env.GDAL }}
             PROJ=${{ env.PROJ }}
             POSTGRES=${{ env.POSTGRES }}

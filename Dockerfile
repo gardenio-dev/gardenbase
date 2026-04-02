@@ -36,6 +36,38 @@ RUN wget -q "https://download.osgeo.org/geos/geos-${GEOS}.tar.bz2" && \
     make install && \
     cd /build && rm -rf "geos-${GEOS}"*
 
+# ── CGAL (header-only) ─────────────────────────────────
+ARG CGAL
+RUN wget -q "https://github.com/CGAL/cgal/releases/download/v${CGAL}/CGAL-${CGAL}.tar.xz" && \
+    tar xJf "CGAL-${CGAL}.tar.xz" && \
+    cd "CGAL-${CGAL}" && \
+    cmake \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_PREFIX=/usr/local \
+        . && \
+    make install && \
+    cd /build && rm -rf "CGAL-${CGAL}"*
+
+# ── SFCGAL ─────────────────────────────────────────────
+ARG SFCGAL
+RUN apt-get update -y && \
+    apt-get install -y --no-install-recommends \
+        libgmp-dev libmpfr-dev \
+        libboost-thread-dev libboost-system-dev \
+        libboost-serialization-dev && \
+    rm -rf /var/lib/apt/lists/*
+RUN wget -q "https://gitlab.com/sfcgal/SFCGAL/-/archive/v${SFCGAL}/SFCGAL-v${SFCGAL}.tar.gz" && \
+    tar xzf "SFCGAL-v${SFCGAL}.tar.gz" && \
+    cd "SFCGAL-v${SFCGAL}" && \
+    mkdir _build && cd _build && \
+    cmake \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_PREFIX=/usr/local \
+        .. && \
+    make -j"$(nproc)" && \
+    make install && \
+    cd /build && rm -rf "SFCGAL-v${SFCGAL}"*
+
 # ── Python ─────────────────────────────────────────────
 ARG PYTHON
 RUN apt-get update -y && \
@@ -140,7 +172,8 @@ RUN wget -q "https://postgis.net/stuff/postgis-${POSTGIS}.tar.gz" && \
     tar xzf "postgis-${POSTGIS}.tar.gz" && \
     cd "postgis-${POSTGIS}" && \
     ./configure \
-        --with-pgconfig=/usr/local/pgsql/bin/pg_config && \
+        --with-pgconfig=/usr/local/pgsql/bin/pg_config \
+        --with-sfcgal=/usr/local/bin/sfcgal-config && \
     make -j"$(nproc)" && \
     make install && \
     cd /build && rm -rf "postgis-${POSTGIS}"*
@@ -181,6 +214,7 @@ ARG POSTGIS
 ARG GDAL
 ARG GEOS
 ARG PROJ
+ARG SFCGAL
 ARG PGROUTING
 LABEL org.opencontainers.image.title="gardenbase" \
       org.opencontainers.image.description="PostGIS image built from source for the GardenIO project" \
@@ -192,6 +226,7 @@ LABEL org.opencontainers.image.title="gardenbase" \
       com.gardenio.gdal.version="${GDAL}" \
       com.gardenio.geos.version="${GEOS}" \
       com.gardenio.proj.version="${PROJ}" \
+      com.gardenio.sfcgal.version="${SFCGAL}" \
       com.gardenio.pgrouting.version="${PGROUTING}"
 
 # Runtime dependencies only (no -dev packages, no compilers)
@@ -199,6 +234,7 @@ RUN apt-get update -y && \
     apt-get install -y --no-install-recommends \
         libcurl4 \
         libgmp10 \
+        libgmpxx4ldbl \
         libicu74 \
         libjson-c5 \
         libmpfr6 \
