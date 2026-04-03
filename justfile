@@ -18,6 +18,8 @@ build profile=default_profile:
         --load \
         --build-arg UBUNTU="${UBUNTU}" \
         --build-arg GEOS="${GEOS}" \
+        --build-arg CGAL="${CGAL}" \
+        --build-arg SFCGAL="${SFCGAL}" \
         --build-arg GDAL="${GDAL}" \
         --build-arg PROJ="${PROJ}" \
         --build-arg POSTGRES="${POSTGRES}" \
@@ -45,6 +47,8 @@ push profile=default_profile: login
         --push \
         --build-arg UBUNTU="${UBUNTU}" \
         --build-arg GEOS="${GEOS}" \
+        --build-arg CGAL="${CGAL}" \
+        --build-arg SFCGAL="${SFCGAL}" \
         --build-arg GDAL="${GDAL}" \
         --build-arg PROJ="${PROJ}" \
         --build-arg POSTGRES="${POSTGRES}" \
