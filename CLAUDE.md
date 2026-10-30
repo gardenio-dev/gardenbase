@@ -32,7 +32,7 @@ is responsible for enabling extensions in tenant databases.
 
 Version pins live in `profiles/*.env` files. Profile names
 follow the tagging convention: `pg{major}-postgis{major}.env`
-(e.g., `pg17-postgis3.5.env`).
+(e.g., `pg18-postgis3.6.env`).
 
 Each profile sets: `IMAGE`, `VERSION`, `UBUNTU`, `GEOS`,
 `GDAL`, `PROJ`, `POSTGRES`, `POSTGIS`, `PGROUTING`, `PYTHON`.
@@ -72,17 +72,17 @@ installed into `$PGDATA` on first run.
 ## Development Commands
 
 ```bash
-# Build with default profile (pg17-postgis3.5)
+# Build with default profile (pg18-postgis3.6)
 just build
 
 # Build with a specific profile
-just build pg17-postgis3.5
+just build pg18-postgis3.6
 
 # Build and push to DockerHub
 just push
 
 # Run locally with docker compose
-source profiles/pg17-postgis3.5.env
+source profiles/pg18-postgis3.6.env
 docker compose up -d
 ```
 
@@ -91,8 +91,8 @@ Note: A full from-source build takes 30-60 minutes.
 ## Tagging Strategy
 
 ```
-gardenio/gardenbase:pg17-postgis3.5      # Major versions
-gardenio/gardenbase:17.5-3.5             # Profile version
+gardenio/gardenbase:pg18-postgis3.6      # Major versions
+gardenio/gardenbase:18.6-3.6             # Profile version
 gardenio/gardenbase:latest               # Most recent
 ```
 

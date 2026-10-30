@@ -1,7 +1,7 @@
 # gardenbase — from-source PostGIS Docker image
 
 # Default profile
-default_profile := "pg17-postgis3.5"
+default_profile := "pg18-postgis3.6"
 
 # List available recipes
 default:
@@ -14,6 +14,12 @@ build profile=default_profile:
     source "profiles/{{ profile }}.env"
     PG_MAJOR="${POSTGRES%%.*}"
     POSTGIS_MAJOR="${POSTGIS%.*}"
+    TAGS=(-t "gardenio/gardenbase:${VERSION}" \
+          -t "gardenio/gardenbase:pg${PG_MAJOR}-postgis${POSTGIS_MAJOR}")
+    # Only the default profile gets "latest"
+    if [ "{{ profile }}" = "{{ default_profile }}" ]; then
+        TAGS+=(-t "gardenio/gardenbase:latest")
+    fi
     docker buildx build \
         --load \
         --build-arg UBUNTU="${UBUNTU}" \
@@ -26,9 +32,7 @@ build profile=default_profile:
         --build-arg POSTGIS="${POSTGIS}" \
         --build-arg PGROUTING="${PGROUTING}" \
         --build-arg PYTHON="${PYTHON}" \
-        -t "gardenio/gardenbase:${VERSION}" \
-        -t "gardenio/gardenbase:pg${PG_MAJOR}-postgis${POSTGIS_MAJOR}" \
-        -t "gardenio/gardenbase:latest" \
+        "${TAGS[@]}" \
         .
 
 # Log in to DockerHub
@@ -42,6 +46,12 @@ push profile=default_profile: login
     source "profiles/{{ profile }}.env"
     PG_MAJOR="${POSTGRES%%.*}"
     POSTGIS_MAJOR="${POSTGIS%.*}"
+    TAGS=(-t "gardenio/gardenbase:${VERSION}" \
+          -t "gardenio/gardenbase:pg${PG_MAJOR}-postgis${POSTGIS_MAJOR}")
+    # Only the default profile gets "latest"
+    if [ "{{ profile }}" = "{{ default_profile }}" ]; then
+        TAGS+=(-t "gardenio/gardenbase:latest")
+    fi
     docker buildx build \
         --platform linux/amd64,linux/arm64 \
         --push \
@@ -55,7 +65,5 @@ push profile=default_profile: login
         --build-arg POSTGIS="${POSTGIS}" \
         --build-arg PGROUTING="${PGROUTING}" \
         --build-arg PYTHON="${PYTHON}" \
-        -t "gardenio/gardenbase:${VERSION}" \
-        -t "gardenio/gardenbase:pg${PG_MAJOR}-postgis${POSTGIS_MAJOR}" \
-        -t "gardenio/gardenbase:latest" \
+        "${TAGS[@]}" \
         .
