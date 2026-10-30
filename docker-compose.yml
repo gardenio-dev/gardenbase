@@ -6,13 +6,15 @@ services:
       dockerfile: Dockerfile
       args:
         UBUNTU: ${UBUNTU:-24.04}
-        GEOS: ${GEOS:-3.13.0}
-        GDAL: ${GDAL:-3.10.2}
-        PROJ: ${PROJ:-9.5.0}
-        POSTGRES: ${POSTGRES:-17.5}
-        POSTGIS: ${POSTGIS:-3.5.1}
-        PGROUTING: ${PGROUTING:-3.6.3}
-        PYTHON: ${PYTHON:-3.13.7}
+        GEOS: ${GEOS:-3.12.1}
+        CGAL: ${CGAL:-6.1.3}
+        SFCGAL: ${SFCGAL:-2.2.0}
+        GDAL: ${GDAL:-3.8.4}
+        PROJ: ${PROJ:-9.4.0}
+        POSTGRES: ${POSTGRES:-18.6}
+        POSTGIS: ${POSTGIS:-3.6.4}
+        PGROUTING: ${PGROUTING:-3.8.0}
+        PYTHON: ${PYTHON:-3.14.10}
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}

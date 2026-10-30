@@ -18,10 +18,10 @@ on:
       profile:
         description: "Build profile (filename without .env)"
         required: true
-        default: "pg17-postgis3.5"
+        default: "pg18-postgis3.6"
 
 env:
-  DEFAULT_PROFILE: pg17-postgis3.5
+  DEFAULT_PROFILE: pg18-postgis3.6
 
 jobs:
   build:
@@ -65,7 +65,10 @@ jobs:
           POSTGIS_MAJOR="${POSTGIS%.*}"
           TAGS="gardenio/gardenbase:${VERSION}"
           TAGS="${TAGS},gardenio/gardenbase:pg${PG_MAJOR}-postgis${POSTGIS_MAJOR}"
-          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+          PROFILE="${{ github.event.inputs.profile || env.DEFAULT_PROFILE }}"
+          # Only the default profile on main gets "latest"
+          if [ "${{ github.ref }}" = "refs/heads/main" ] && \
+             [ "${PROFILE}" = "${DEFAULT_PROFILE}" ]; then
             TAGS="${TAGS},gardenio/gardenbase:latest"
           fi
           echo "tags=${TAGS}" >> "$GITHUB_OUTPUT"
