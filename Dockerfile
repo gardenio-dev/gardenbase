@@ -140,10 +140,12 @@ RUN cd "postgresql-${POSTGRES}/contrib/pg_trgm" && \
 ARG GDAL
 RUN apt-get update -y && \
     apt-get install -y --no-install-recommends \
-        libcurl4-openssl-dev libtiff-dev libgeotiff-dev \
+        libcurl4-openssl-dev libtiff-dev \
         libpng-dev libjpeg-dev libxml2-dev libexpat1-dev \
         libsqlite3-dev libpq-dev && \
     rm -rf /var/lib/apt/lists/*
+# Use GDAL's bundled libgeotiff: Ubuntu's libgeotiff depends
+# on Ubuntu's PROJ, which would shadow our from-source PROJ
 RUN wget -q "https://github.com/OSGeo/gdal/releases/download/v${GDAL}/gdal-${GDAL}.tar.gz" && \
     tar xzf "gdal-${GDAL}.tar.gz" && \
     cd "gdal-${GDAL}" && \
@@ -151,6 +153,7 @@ RUN wget -q "https://github.com/OSGeo/gdal/releases/download/v${GDAL}/gdal-${GDA
     cmake \
         -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_INSTALL_PREFIX=/usr/local \
+        -DGDAL_USE_GEOTIFF_INTERNAL=ON \
         .. && \
     cmake --build . -j"$(nproc)" && \
     cmake --build . --target install && \
@@ -243,6 +246,9 @@ RUN apt-get update -y && \
         libreadline8t64 \
         libsqlite3-0 \
         libtiff6 \
+        libpng16-16t64 \
+        libexpat1 \
+        libpq5 \
         libxml2 \
         libssl3t64 \
         libboost-serialization1.83.0 \
