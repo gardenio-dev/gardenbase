@@ -103,6 +103,13 @@ GitHub Actions workflow (`.github/workflows/build-push.yml`):
 - **Pull requests**: build only (no push)
 - **Manual dispatch**: select profile by name
 
+Each platform builds on its own native runner
+(`ubuntu-24.04` for amd64, `ubuntu-24.04-arm` for arm64)
+and is pushed by digest; a `merge` job then tags the
+multi-platform manifest. Tags change only if both platforms
+build. Only the default profile on `main` is tagged
+`latest`.
+
 Requires repository secrets:
 - `DOCKERHUB_USERNAME`
 - `DOCKERHUB_TOKEN`
